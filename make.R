@@ -3,8 +3,13 @@
 ##                               DATA COLLECTION                              ##
 ##----------------------------------------------------------------------------##
 
-## load rtweet and tidyverse
+## load rtweet, dplyr, and tidyverse
 library(rtweet)
+library(dplyr)
+library(ggplot2)
+## also need installed
+#pkgs <- c("ggrepel", "purrr", "tfse", "hms")
+
 
 ## define function for getting CSPAN Twitter lists data
 get_cspan_list <- function(slug) {
@@ -45,8 +50,9 @@ suppressPackageStartupMessages(library(tidyverse))
 data <- readRDS("data/timestamped-followers-data.rds")
 
 ## merge with running data set
-cspan_data <- bind_rows(data, 
-  select(cspan_data, user_id, screen_name, followers_count, timestamp, cspan_list))
+cspan_data <- bind_rows(data,
+  select(cspan_data, user_id, screen_name,
+    followers_count, timestamp, cspan_list))
 
 ## save minimal form for public data
 saveRDS(cspan_data, "data/timestamped-followers-data.rds")
@@ -54,7 +60,8 @@ saveRDS(cspan_data, "data/timestamped-followers-data.rds")
 ## fast unique
 funique <- function(x) {
   ## identify date-time, date, and character columns
-  psx <- vapply(x, inherits, "POSIXct", FUN.VALUE = logical(1), USE.NAMES = FALSE)
+  psx <- vapply(x, inherits, "POSIXct",
+    FUN.VALUE = logical(1), USE.NAMES = FALSE)
   ## convert those columns to factors
   x[psx] <- lapply(x[psx], as.integer)
   ## return only unique rows
@@ -74,9 +81,9 @@ round2hour <- function(x) {
 ## save trimmed down CSV version for public data
 cspan_data %>%
   select(screen_name, followers_count, timestamp) %>%
-  mutate(timestamp = round2hour(timestamp), 
+  mutate(timestamp = round2hour(timestamp),
     timestamp = as.integer(timestamp)) %>%
-  write_csv("data/timestamped-followers-data.csv")
+  readr::write_csv("data/timestamped-followers-data.csv")
 
 ## shortcuts for subsetting into data sets
 congress_data <- function(cspan_data) filter(
@@ -87,12 +94,12 @@ governors_data <- function(cspan_data) filter(
   cspan_data, cspan_list == "governors")
 
 ## plot most popular congress accounts
-library(ggrepel)
 
 ## hacky function for labels
 timestamp_range <- function(timestamp) {
   n <- length(unique(timestamp))
-  x <- seq(min(timestamp), max(timestamp), length.out = (length(timestamp) / n))
+  x <- seq(min(timestamp), max(timestamp),
+    length.out = (length(timestamp) / n))
   nas <- rep(as.POSIXct(NA_character_), length(x))
   c(x, rep(nas, n - 1L))
 }
@@ -110,15 +117,17 @@ cspan_data %>%
   ggplot(aes(x = timestamp, y = followers_count,
     colour = screen_name, label = lab)) +
   theme_mwk(base_family = "Roboto Condensed") +
-  theme(legend.position = "none", axis.title = element_text(hjust = .95, face = "italic")) +
+  theme(legend.position = "none",
+    axis.title = element_text(hjust = .95, face = "italic")) +
   geom_line(size = .6) +
-  geom_label_repel(family = "Roboto Condensed", size = 2.5,
+  ggrepel::geom_label_repel(family = "Roboto Condensed", size = 2.5,
     label.size = .05, label.padding = .05, fill = "#ffffffbb") +
   labs(title = "Tracking follower counts for members of Congress on Twitter",
     subtitle = "Tracking the number of Twitter followers of members of the Congress over time",
     x = NULL, y = "Number of followers (squared)",
     caption = "\nSource: Data collected via Twitter's REST API using rtweet (http://rtweet.info)") +
-  ggsave("plots/members-of-congress.png", width = 9, height = 11, units = "in")
+  ggsave("plots/members-of-congress.png",
+    width = 9, height = 11, units = "in")
 
 ## cabinet members
 cspan_data %>%
@@ -133,15 +142,17 @@ cspan_data %>%
   ggplot(aes(x = timestamp, y = followers_count,
     colour = screen_name, label = lab)) +
   theme_mwk(base_family = "Roboto Condensed") +
-  theme(legend.position = "none", axis.title = element_text(hjust = .95, face = "italic")) +
+  theme(legend.position = "none",
+    axis.title = element_text(hjust = .95, face = "italic")) +
   geom_line(size = .6) +
-  geom_label_repel(family = "Roboto Condensed", size = 2.5,
+  ggrepel::geom_label_repel(family = "Roboto Condensed", size = 2.5,
     label.size = .05, label.padding = .05, fill = "#ffffffbb") +
   labs(title = "Tracking follower counts for Cabinet members on Twitter",
     subtitle = "Tracking the number of Twitter followers of members of the Cabinet over time",
     x = NULL, y = "Number of followers (squared)",
     caption = "\nSource: Data collected via Twitter's REST API using rtweet (http://rtweet.info)") +
-  ggsave("plots/the-cabinet.png", width = 9, height = 11, units = "in")
+  ggsave("plots/the-cabinet.png",
+    width = 9, height = 11, units = "in")
 
 ## governors
 cspan_data %>%
@@ -156,9 +167,10 @@ cspan_data %>%
   ggplot(aes(x = timestamp, y = followers_count,
     colour = screen_name, label = lab)) +
   theme_mwk(base_family = "Roboto Condensed") +
-  theme(legend.position = "none", axis.title = element_text(hjust = .95, face = "italic")) +
+  theme(legend.position = "none",
+    axis.title = element_text(hjust = .95, face = "italic")) +
   geom_line(size = .6) +
-  geom_label_repel(family = "Roboto Condensed", size = 2.5,
+  ggrepel::geom_label_repel(family = "Roboto Condensed", size = 2.5,
     label.size = .05, label.padding = .05, fill = "#ffffffbb") +
   labs(title = "Tracking follower counts for U.S. Governors on Twitter",
     subtitle = "Tracking the number of Twitter followers of Governors over time",
