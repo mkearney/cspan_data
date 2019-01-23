@@ -125,7 +125,7 @@ cspan_data %>%
     label.size = .05, label.padding = .05, fill = "#ffffffbb") +
   labs(title = "Tracking follower counts for members of Congress on Twitter",
     subtitle = "Tracking the number of Twitter followers of members of the Congress over time",
-    x = NULL, y = "Number of followers (squared)",
+    x = NULL, y = "\u221a\u02c9Followers",
     caption = "\nSource: Data collected via Twitter's REST API using rtweet (http://rtweet.info)") +
   ggsave("plots/members-of-congress.png",
     width = 9, height = 9, units = "in")
@@ -150,7 +150,7 @@ cspan_data %>%
     label.size = .05, label.padding = .05, fill = "#ffffffbb") +
   labs(title = "Tracking follower counts for Cabinet members on Twitter",
     subtitle = "Tracking the number of Twitter followers of members of the Cabinet over time",
-    x = NULL, y = "Number of followers (squared)",
+    x = NULL, y = "\u221a\u02c9Followers",
     caption = "\nSource: Data collected via Twitter's REST API using rtweet (http://rtweet.info)") +
   ggsave("plots/the-cabinet.png",
     width = 9, height = 9, units = "in")
@@ -175,7 +175,7 @@ cspan_data %>%
     label.size = .05, label.padding = .05, fill = "#ffffffbb") +
   labs(title = "Tracking follower counts for U.S. Governors on Twitter",
     subtitle = "Tracking the number of Twitter followers of Governors over time",
-    x = NULL, y = "Number of followers (squared)",
+    x = NULL, y = "\u221a\u02c9Followers",
     caption = "\nSource: Data collected via Twitter's REST API using rtweet (http://rtweet.info)") +
   ggsave("plots/governors.png", width = 9, height = 9, units = "in")
 
