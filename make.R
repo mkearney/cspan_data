@@ -6,8 +6,8 @@
 ## load rtweet, dplyr, and tidyverse
 library(rtweet)
 library(dataviz)
-suppressPackageStartupMessages(library(dplyr))
-library(ggplot2)
+suppressPackageStartupMessages(library(tidyverse))
+
 ## also need installed
 #pkgs <- c("ggrepel", "purrr", "tfse", "hms")
 
@@ -45,7 +45,7 @@ saveRDS(cspan_data, save_as)
 ##----------------------------------------------------------------------------##
 
 ## load tidyverse
-suppressPackageStartupMessages(library(tidyverse))
+#suppressPackageStartupMessages(library(tidyverse))
 
 ## read timestamped followers count file
 data <- readRDS("data/timestamped-followers-data.rds")
@@ -106,7 +106,7 @@ timestamp_range <- function(timestamp) {
 }
 
 ## member of congress
-cspan_data %>%
+p <- cspan_data %>%
   filter(followers_count > 6e5) %>%
   congress_data() %>%
   mutate(followers_count = sqrt(followers_count)) %>%
@@ -126,12 +126,14 @@ cspan_data %>%
   labs(title = "Tracking follower counts for members of Congress on Twitter",
     subtitle = "Tracking the number of Twitter followers of members of the Congress over time",
     x = NULL, y = "\u221a\u02c9Followers",
-    caption = "\nSource: Data collected via Twitter's REST API using rtweet (http://rtweet.info)") +
+    caption = "\nSource: Data collected via Twitter's REST API using rtweet (http://rtweet.info)")
+
+pp <- p +
   ggsave("plots/members-of-congress.png",
-    width = 9, height = 9, units = "in")
+    width = 9, height = 9, units = "in", device = "png")
 
 ## cabinet members
-cspan_data %>%
+p <- cspan_data %>%
   filter(followers_count > 6e5) %>%
   cabinet_data() %>%
   mutate(followers_count = sqrt(followers_count)) %>%
@@ -151,12 +153,14 @@ cspan_data %>%
   labs(title = "Tracking follower counts for Cabinet members on Twitter",
     subtitle = "Tracking the number of Twitter followers of members of the Cabinet over time",
     x = NULL, y = "\u221a\u02c9Followers",
-    caption = "\nSource: Data collected via Twitter's REST API using rtweet (http://rtweet.info)") +
+    caption = "\nSource: Data collected via Twitter's REST API using rtweet (http://rtweet.info)")
+
+pp <- p +
   ggsave("plots/the-cabinet.png",
-    width = 9, height = 9, units = "in")
+    width = 9, height = 9, units = "in", device = "png")
 
 ## governors
-cspan_data %>%
+p <- cspan_data %>%
   filter(followers_count > 100000) %>%
   governors_data() %>%
   mutate(followers_count = sqrt(followers_count)) %>%
@@ -176,8 +180,11 @@ cspan_data %>%
   labs(title = "Tracking follower counts for U.S. Governors on Twitter",
     subtitle = "Tracking the number of Twitter followers of Governors over time",
     x = NULL, y = "\u221a\u02c9Followers",
-    caption = "\nSource: Data collected via Twitter's REST API using rtweet (http://rtweet.info)") +
-  ggsave("plots/governors.png", width = 9, height = 9, units = "in")
+    caption = "\nSource: Data collected via Twitter's REST API using rtweet (http://rtweet.info)")
+
+pp <- p +
+  ggsave("plots/governors.png", width = 9,
+    height = 9, units = "in", device = "png")
 
 ## add, commit, and push to git
 git2r::add(path = ".")
