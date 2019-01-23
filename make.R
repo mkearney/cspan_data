@@ -5,7 +5,8 @@
 
 ## load rtweet, dplyr, and tidyverse
 library(rtweet)
-library(dplyr)
+library(dataviz)
+suppressPackageStartupMessages(library(dplyr))
 library(ggplot2)
 ## also need installed
 #pkgs <- c("ggrepel", "purrr", "tfse", "hms")
@@ -79,11 +80,11 @@ round2hour <- function(x) {
 }
 
 ## save trimmed down CSV version for public data
-cspan_data %>%
-  select(screen_name, followers_count, timestamp) %>%
-  mutate(timestamp = round2hour(timestamp),
-    timestamp = as.integer(timestamp)) %>%
-  readr::write_csv("data/timestamped-followers-data.csv")
+#cspan_data %>%
+#  select(screen_name, followers_count, timestamp) %>%
+#  mutate(timestamp = round2hour(timestamp),
+#    timestamp = as.integer(timestamp)) %>%
+#  readr::write_csv("data/timestamped-followers-data.csv")
 
 ## shortcuts for subsetting into data sets
 congress_data <- function(cspan_data) filter(
@@ -127,7 +128,7 @@ cspan_data %>%
     x = NULL, y = "Number of followers (squared)",
     caption = "\nSource: Data collected via Twitter's REST API using rtweet (http://rtweet.info)") +
   ggsave("plots/members-of-congress.png",
-    width = 9, height = 11, units = "in")
+    width = 9, height = 9, units = "in")
 
 ## cabinet members
 cspan_data %>%
@@ -152,7 +153,7 @@ cspan_data %>%
     x = NULL, y = "Number of followers (squared)",
     caption = "\nSource: Data collected via Twitter's REST API using rtweet (http://rtweet.info)") +
   ggsave("plots/the-cabinet.png",
-    width = 9, height = 11, units = "in")
+    width = 9, height = 9, units = "in")
 
 ## governors
 cspan_data %>%
@@ -176,7 +177,9 @@ cspan_data %>%
     subtitle = "Tracking the number of Twitter followers of Governors over time",
     x = NULL, y = "Number of followers (squared)",
     caption = "\nSource: Data collected via Twitter's REST API using rtweet (http://rtweet.info)") +
-  ggsave("plots/governors.png", width = 9, height = 11, units = "in")
+  ggsave("plots/governors.png", width = 9, height = 9, units = "in")
 
 ## add, commit, and push to git
-tfse::add_to_git("auto update", pull = FALSE, interactive = FALSE)
+git2r::add(path = ".")
+git2r::commit(message = "auto update")
+system("git push")
